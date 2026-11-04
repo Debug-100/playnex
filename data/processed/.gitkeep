@@ -1,0 +1,8 @@
+# Processed data directory
+
+This directory contains auto-generated files produced by `ml/preprocessing.py`:
+- `cleaned_games.csv` — Cleaned version of the raw dataset
+- `dataset_stats.json` — Aggregate statistics cache
+
+These files are excluded from version control (see `.gitignore`).
+Run `python ml/preprocessing.py` after placing the raw dataset in `data/raw/`.
