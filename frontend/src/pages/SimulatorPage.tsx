@@ -9,7 +9,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, Radar, PieChart, Pie, Cell, Legend
 } from 'recharts';
 
-const COLORS = ['#8b5cf6', '#6366f1', '#3b82f6', '#06b6d4', '#10b981'];
+const COLORS = ['#ffffff', '#d4d4d8', '#a1a1aa', '#71717a', '#52525b'];
 
 interface SimOptions { genres: string[]; platforms: string[]; publishers: string[]; years: number[] }
 interface Prediction {
@@ -34,35 +34,35 @@ function PredictionReport({ result }: { result: Prediction }) {
   ];
 
   return (
-    <div className="card p-6 border-violet-500/30 glow-sm">
+    <div className="card p-6 border-zinc-700">
       <div className="flex items-center gap-2 mb-5">
-        <Zap size={16} className="text-violet-400" />
+        <Zap size={16} className="text-zinc-400" />
         <h3 className="font-semibold text-white">Historical Sales Estimate</h3>
-        <span className="ml-auto badge-violet">Random Forest</span>
+        <span className="ml-auto badge-default">Random Forest</span>
       </div>
 
       {/* Config summary */}
       <div className="flex flex-wrap gap-2 mb-5">
         {Object.entries(result.input).map(([k, v]) => (
-          <div key={k} className="bg-navy-900 border border-slate-800 rounded-lg px-3 py-1.5">
-            <div className="text-xs text-slate-500 capitalize">{k}</div>
+          <div key={k} className="bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5">
+            <div className="text-xs text-zinc-500 capitalize">{k}</div>
             <div className="text-sm font-medium text-white">{v}</div>
           </div>
         ))}
       </div>
 
       {/* Global headline */}
-      <div className="bg-violet-600/10 border border-violet-500/20 rounded-xl p-5 mb-5 text-center">
-        <div className="text-xs text-slate-500 mb-1 uppercase tracking-wider">Estimated Global Sales</div>
-        <div className="text-4xl font-bold text-violet-300">{((p.Global_Sales as number) || 0).toFixed(2)}M</div>
-        <div className="text-xs text-slate-600 mt-1">units (millions, historical estimate)</div>
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-5 text-center">
+        <div className="text-xs text-zinc-400 mb-1 uppercase tracking-wider">Estimated Global Sales</div>
+        <div className="text-4xl font-bold text-white">{((p.Global_Sales as number) || 0).toFixed(2)}M</div>
+        <div className="text-xs text-zinc-500 mt-1">units (millions, historical estimate)</div>
       </div>
 
       {/* Regional grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
         {regionData.map(r => (
           <div key={r.name} className="card-sm p-3 text-center">
-            <div className="text-xs text-slate-500 mb-1">{r.name}</div>
+            <div className="text-xs text-zinc-400 mb-1">{r.name}</div>
             <div className="text-lg font-bold text-white">{r.value.toFixed(2)}M</div>
           </div>
         ))}
@@ -71,13 +71,13 @@ function PredictionReport({ result }: { result: Prediction }) {
       {/* Chart */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div>
-          <h4 className="text-sm text-slate-400 mb-2">Regional Breakdown</h4>
+          <h4 className="text-sm text-zinc-400 mb-2">Regional Breakdown</h4>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={regionData} margin={{ left: -20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} />
-              <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
-              <Tooltip contentStyle={{ background: '#10102a', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+              <XAxis dataKey="name" tick={{ fill: '#71717a', fontSize: 10 }} />
+              <YAxis tick={{ fill: '#71717a', fontSize: 10 }} />
+              <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
               <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                 {regionData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
               </Bar>
@@ -85,14 +85,14 @@ function PredictionReport({ result }: { result: Prediction }) {
           </ResponsiveContainer>
         </div>
         <div>
-          <h4 className="text-sm text-slate-400 mb-2">Distribution</h4>
+          <h4 className="text-sm text-zinc-400 mb-2">Distribution</h4>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
               <Pie data={regionData} dataKey="value" cx="50%" cy="50%" outerRadius={65} paddingAngle={2}>
                 {regionData.map((_, i) => <Cell key={i} fill={COLORS[i]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: '#10102a', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
-              <Legend iconSize={8} wrapperStyle={{ color: '#94a3b8', fontSize: 11 }} />
+              <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
+              <Legend iconSize={8} wrapperStyle={{ color: '#71717a', fontSize: 11 }} />
             </PieChart>
           </ResponsiveContainer>
         </div>
@@ -243,11 +243,11 @@ export default function SimulatorPage() {
               <h3 className="section-header mb-3">Comparison Scenarios</h3>
               <div className="space-y-2 mb-4">
                 {scenarios.map((s, i) => (
-                  <div key={i} className="flex items-center gap-2 bg-navy-900 rounded-lg px-3 py-2">
-                    <span className="text-xs font-mono text-violet-400 w-16">{s.label}</span>
-                    <span className="text-xs text-slate-300 flex-1">{s.genre} · {s.platform}</span>
-                    <span className="text-xs text-slate-500">{s.year}</span>
-                    <button onClick={() => removeScenario(i)} className="text-slate-600 hover:text-red-400 transition-colors">
+                  <div key={i} className="flex items-center gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2">
+                    <span className="text-xs font-mono text-zinc-300 w-16">{s.label}</span>
+                    <span className="text-xs text-zinc-300 flex-1">{s.genre} · {s.platform}</span>
+                    <span className="text-xs text-zinc-500">{s.year}</span>
+                    <button onClick={() => removeScenario(i)} className="text-zinc-500 hover:text-red-400 transition-colors">
                       <Trash2 size={12} />
                     </button>
                   </div>
@@ -269,8 +269,8 @@ export default function SimulatorPage() {
 
           {!result && !predError && !predicting && (
             <div className="card p-10 text-center">
-              <Rocket size={32} className="text-slate-700 mx-auto mb-3" />
-              <p className="text-slate-500 text-sm">Configure your game and click <strong className="text-slate-400">Estimate Sales</strong> to get a prediction.</p>
+              <Rocket size={32} className="text-zinc-600 mx-auto mb-3" />
+              <p className="text-zinc-500 text-sm">Configure your game and click <strong className="text-zinc-300">Estimate Sales</strong> to get a prediction.</p>
             </div>
           )}
 
@@ -281,13 +281,13 @@ export default function SimulatorPage() {
               <div className="flex items-center justify-between mb-4">
                 <h3 className="section-header">Strategy Comparison</h3>
                 {compResults.best_scenario && (
-                  <span className="badge-green">Best: {compResults.best_scenario}</span>
+                  <span className="badge-default">Best: {compResults.best_scenario}</span>
                 )}
               </div>
               <div className="overflow-x-auto mb-5">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-800">
+                    <tr className="border-b border-zinc-800">
                       {['Strategy', 'Genre', 'Platform', 'Year', 'Global (M)', 'NA (M)', 'EU (M)', 'JP (M)'].map(h => (
                         <th key={h} className="table-header pb-2 px-2 text-left text-xs">{h}</th>
                       ))}
@@ -297,9 +297,9 @@ export default function SimulatorPage() {
                     {compResults.scenarios.map((s, i) => {
                       const isBest = s.label === compResults.best_scenario;
                       return (
-                        <tr key={i} className={`table-row ${isBest ? 'bg-violet-600/5' : ''}`}>
+                        <tr key={i} className={`table-row ${isBest ? 'bg-zinc-800/40' : ''}`}>
                           <td className="table-cell">
-                            <span className={`font-medium ${isBest ? 'text-violet-400' : 'text-white'}`}>{s.label}</span>
+                            <span className={`font-medium ${isBest ? 'text-white' : 'text-zinc-400'}`}>{s.label}</span>
                           </td>
                           <td className="table-cell text-xs">{s.genre}</td>
                           <td className="table-cell text-xs">{s.platform}</td>
@@ -323,15 +323,15 @@ export default function SimulatorPage() {
               {compChart.length > 0 && (
                 <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={compChart} margin={{ left: -20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                    <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 11 }} />
-                    <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
-                    <Tooltip contentStyle={{ background: '#10102a', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
-                    <Bar dataKey="Global" fill="#8b5cf6" radius={[3, 3, 0, 0]} name="Global" />
-                    <Bar dataKey="NA" fill="#6366f1" radius={[3, 3, 0, 0]} name="NA" />
-                    <Bar dataKey="EU" fill="#3b82f6" radius={[3, 3, 0, 0]} name="EU" />
-                    <Bar dataKey="JP" fill="#06b6d4" radius={[3, 3, 0, 0]} name="JP" />
-                    <Legend wrapperStyle={{ color: '#94a3b8', fontSize: 11 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                    <XAxis dataKey="name" tick={{ fill: '#71717a', fontSize: 11 }} />
+                    <YAxis tick={{ fill: '#71717a', fontSize: 10 }} />
+                    <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8, color: '#fff' }} formatter={(v: any) => [`${v.toFixed(2)}M`]} />
+                    <Bar dataKey="Global" fill="#ffffff" radius={[3, 3, 0, 0]} name="Global" />
+                    <Bar dataKey="NA" fill="#d4d4d8" radius={[3, 3, 0, 0]} name="NA" />
+                    <Bar dataKey="EU" fill="#a1a1aa" radius={[3, 3, 0, 0]} name="EU" />
+                    <Bar dataKey="JP" fill="#71717a" radius={[3, 3, 0, 0]} name="JP" />
+                    <Legend wrapperStyle={{ color: '#71717a', fontSize: 11 }} />
                   </BarChart>
                 </ResponsiveContainer>
               )}

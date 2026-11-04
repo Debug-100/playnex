@@ -145,7 +145,7 @@ export default function MarketPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.08 }}
               className="card-sm p-4"
-              style={{ borderLeft: '2px solid rgba(139,92,246,0.5)' }}
+              style={{ borderLeft: '2px solid #52525b' }}
             >
               <div className="text-[10px] uppercase tracking-widest font-medium mb-1" style={{ color: '#334155' }}>{ins.title}</div>
               <div className="font-semibold text-white text-sm">{ins.value}</div>
@@ -168,7 +168,7 @@ export default function MarketPage() {
                 <Tooltip {...TT_STYLE} formatter={(v: any) => [`${Number(v).toFixed(1)}M`, 'Sales']} />
                 <Bar dataKey="total_sales" radius={[4, 4, 0, 0]}>
                   {genres.map((_, i) => (
-                    <Cell key={i} fill={i === 0 ? '#8b5cf6' : `rgba(139,92,246,${0.7 - i * 0.05})`} />
+                    <Cell key={i} fill={i === 0 ? '#fafafa' : `rgba(250,250,250,${Math.max(0.2, 0.85 - i * 0.06)})`} />
                   ))}
                 </Bar>
               </BarChart>
@@ -213,9 +213,9 @@ export default function MarketPage() {
               <XAxis dataKey="Year" tick={{ ...axisStyle }} />
               <YAxis tick={{ ...axisStyle }} />
               <Tooltip {...TT_STYLE} formatter={(v: any) => [`${Number(v).toFixed(1)}M`]} />
-              <Line type="monotone" dataKey="total_sales" stroke="#8b5cf6" strokeWidth={2} dot={false} name="Total Sales (M)" />
-              <Line type="monotone" dataKey="game_count" stroke="#6366f1" strokeWidth={1.5} dot={false} strokeDasharray="4 2" name="Games Released" />
-              <Legend wrapperStyle={{ color: '#475569', fontSize: 11 }} />
+              <Line type="monotone" dataKey="total_sales" stroke="#fafafa" strokeWidth={2} dot={false} name="Total Sales (M)" />
+              <Line type="monotone" dataKey="game_count" stroke="#71717a" strokeWidth={1.5} dot={false} strokeDasharray="4 2" name="Games Released" />
+              <Legend wrapperStyle={{ color: '#71717a', fontSize: 11 }} />
             </LineChart>
           </ResponsiveContainer>
         )}
@@ -233,7 +233,7 @@ export default function MarketPage() {
               <Tooltip {...TT_STYLE} formatter={(v: any) => [`${Number(v).toFixed(1)}M`]} />
               <Bar dataKey="total_sales" radius={[4, 4, 0, 0]}>
                 {platforms.map((_, i) => (
-                  <Cell key={i} fill={i === 0 ? '#6366f1' : `rgba(99,102,241,${0.7 - i * 0.05})`} />
+                  <Cell key={i} fill={i === 0 ? '#e4e4e7' : `rgba(228,228,231,${Math.max(0.15, 0.75 - i * 0.05)})`} />
                 ))}
               </Bar>
             </BarChart>

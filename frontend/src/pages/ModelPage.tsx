@@ -10,21 +10,21 @@ import {
 } from 'recharts';
 
 const REGION_COLORS: Record<string, string> = {
-  Global_Sales: '#8b5cf6', NA_Sales: '#6366f1', EU_Sales: '#3b82f6',
-  JP_Sales: '#06b6d4', Other_Sales: '#10b981',
+  Global_Sales: '#ffffff', NA_Sales: '#e4e4e7', EU_Sales: '#d4d4d8',
+  JP_Sales: '#a1a1aa', Other_Sales: '#71717a',
 };
 
 function MetricRow({ label, rf, baseline, better }: { label: string; rf: number; baseline: number; better: 'higher' | 'lower' }) {
   const isImproved = better === 'higher' ? rf > baseline : rf < baseline;
   return (
     <tr className="table-row">
-      <td className="table-cell text-xs text-slate-400 w-32">{label}</td>
-      <td className="table-cell font-mono text-sm text-violet-300">{rf?.toFixed(4)}</td>
-      <td className="table-cell font-mono text-sm text-slate-500">{baseline?.toFixed(4)}</td>
+      <td className="table-cell text-xs text-zinc-400 w-32">{label}</td>
+      <td className="table-cell font-mono text-sm text-zinc-100">{rf?.toFixed(4)}</td>
+      <td className="table-cell font-mono text-sm text-zinc-500">{baseline?.toFixed(4)}</td>
       <td className="table-cell">
         {isImproved
-          ? <span className="badge-green flex items-center gap-1 w-fit"><TrendingUp size={10} /> Better</span>
-          : <span className="text-xs text-red-400 flex items-center gap-1"><TrendingDown size={10} /> Worse</span>}
+          ? <span className="badge-default flex items-center gap-1 w-fit"><TrendingUp size={10} /> Better</span>
+          : <span className="text-xs text-zinc-500 flex items-center gap-1"><TrendingDown size={10} /> Worse</span>}
       </td>
     </tr>
   );
@@ -83,13 +83,13 @@ export default function ModelPage() {
             return (
               <div key={target} className="card p-5 mb-5">
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="w-3 h-3 rounded-full" style={{ background: REGION_COLORS[target] || '#8b5cf6' }} />
+                  <div className="w-3 h-3 rounded-full" style={{ background: REGION_COLORS[target] || '#ffffff' }} />
                   <h3 className="font-semibold text-white">{target.replace('_', ' ')}</h3>
-                  <span className="ml-auto badge-violet">R² {m.r2.toFixed(4)}</span>
+                  <span className="ml-auto badge-default">R² {m.r2.toFixed(4)}</span>
                 </div>
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-slate-800">
+                    <tr className="border-b border-zinc-800">
                       {['Metric', 'Random Forest', 'Baseline (Mean)', 'Result'].map(h => (
                         <th key={h} className="table-header pb-2 px-3 text-left text-xs">{h}</th>
                       ))}
@@ -111,19 +111,19 @@ export default function ModelPage() {
               <h3 className="section-header mb-4">Feature Importances</h3>
               <ResponsiveContainer width="100%" height={160}>
                 <BarChart data={featureData} margin={{ left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-                  <XAxis dataKey="name" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                  <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+                  <XAxis dataKey="name" tick={{ fill: '#a1a1aa', fontSize: 12 }} />
+                  <YAxis tick={{ fill: '#71717a', fontSize: 10 }} />
                   <Tooltip
-                    contentStyle={{ background: '#10102a', border: '1px solid #334155', borderRadius: 8, color: '#fff' }}
+                    contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8, color: '#fff' }}
                     formatter={(v: any) => [v.toFixed(4), 'Importance']}
                   />
                   <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                    {featureData.map((_, i) => <Cell key={i} fill={Object.values(REGION_COLORS)[i % 5]} />)}
+                    {featureData.map((_, i) => <Cell key={i} fill={['#ffffff', '#e4e4e7', '#a1a1aa', '#71717a'][i % 4]} />)}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
-              <p className="text-xs text-slate-600 mt-3">Feature importance is computed as the mean decrease in impurity across all trees in the forest.</p>
+              <p className="text-xs text-zinc-500 mt-3">Feature importance is computed as the mean decrease in impurity across all trees in the forest.</p>
             </div>
           )}
 

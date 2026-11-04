@@ -124,11 +124,11 @@ export default function CompetitorsPage() {
 
       {/* Selection bar */}
       {selected.length > 0 && (
-        <div className="card p-3 mb-4 flex items-center gap-3 border-violet-500/20">
-          <span className="text-sm text-slate-400">{selected.length} selected:</span>
+        <div className="card p-3 mb-4 flex items-center gap-3 border-zinc-700">
+          <span className="text-sm text-zinc-400">{selected.length} selected:</span>
           <div className="flex flex-wrap gap-2 flex-1">
             {selected.map(g => (
-              <span key={g.Name + g.Platform} className="badge-violet flex items-center gap-1">
+              <span key={g.Name + g.Platform} className="badge-default flex items-center gap-1">
                 {g.Name.slice(0, 20)} ({g.Platform})
                 <button onClick={() => toggleSelect(g)}><X size={10} /></button>
               </span>
@@ -148,7 +148,7 @@ export default function CompetitorsPage() {
           <div className="overflow-x-auto mb-6">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="border-b border-zinc-800">
                   {['Metric', ...compareData.map(g => g.Name.slice(0, 18))].map(h => (
                     <th key={h} className="table-header pb-2 px-3 first:text-left text-right first:text-left">{h}</th>
                   ))}
@@ -167,7 +167,7 @@ export default function CompetitorsPage() {
                   { key: 'User_Score', label: 'User Score' },
                 ].map(({ key, label }) => (
                   <tr key={key} className="table-row">
-                    <td className="table-cell text-slate-500 text-xs font-medium">{label}</td>
+                    <td className="table-cell text-zinc-400 text-xs font-medium">{label}</td>
                     {compareData.map((g: any) => (
                       <td key={g.Name + g.Platform} className="table-cell text-right">
                         {g[key] !== null && g[key] !== undefined ? (
@@ -180,18 +180,18 @@ export default function CompetitorsPage() {
               </tbody>
             </table>
           </div>
-          <h4 className="text-sm font-medium text-slate-300 mb-3">Regional Sales Breakdown</h4>
+          <h4 className="text-sm font-medium text-zinc-300 mb-3">Regional Sales Breakdown</h4>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={comparisonChartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 10 }} />
-              <YAxis tick={{ fill: '#64748b', fontSize: 10 }} />
-              <Tooltip contentStyle={{ background: '#10102a', border: '1px solid #334155', borderRadius: 8, color: '#fff' }} />
-              <Bar dataKey="NA" fill="#8b5cf6" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="EU" fill="#6366f1" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="JP" fill="#3b82f6" radius={[2, 2, 0, 0]} />
-              <Bar dataKey="Other" fill="#06b6d4" radius={[2, 2, 0, 0]} />
-              <Legend wrapperStyle={{ color: '#94a3b8', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#27272a" />
+              <XAxis dataKey="name" tick={{ fill: '#71717a', fontSize: 10 }} />
+              <YAxis tick={{ fill: '#71717a', fontSize: 10 }} />
+              <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #27272a', borderRadius: 8, color: '#fff' }} />
+              <Bar dataKey="NA" fill="#ffffff" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="EU" fill="#d4d4d8" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="JP" fill="#a1a1aa" radius={[2, 2, 0, 0]} />
+              <Bar dataKey="Other" fill="#71717a" radius={[2, 2, 0, 0]} />
+              <Legend wrapperStyle={{ color: '#71717a', fontSize: 12 }} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -199,15 +199,15 @@ export default function CompetitorsPage() {
 
       {/* Games table */}
       <div className="card overflow-hidden">
-        <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-          <span className="text-sm text-slate-400">{total.toLocaleString()} games</span>
-          <span className="text-xs text-slate-600">Select up to 5 to compare</span>
+        <div className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+          <span className="text-sm text-zinc-400">{total.toLocaleString()} games</span>
+          <span className="text-xs text-zinc-500">Select up to 5 to compare</span>
         </div>
         {loading ? <SkeletonTable rows={8} /> : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-slate-800">
+                <tr className="border-b border-zinc-800">
                   <th className="table-header px-4 pb-3 pt-2 w-6"></th>
                   {['Title', 'Platform', 'Genre', 'Publisher', 'Year', 'Global Sales', 'Critic Score'].map(h => (
                     <th key={h} className="table-header px-3 pb-3 pt-2 text-left">{h}</th>
@@ -218,20 +218,20 @@ export default function CompetitorsPage() {
                 {games.map((g, i) => {
                   const isSelected = selected.some(s => s.Name === g.Name && s.Platform === g.Platform);
                   return (
-                    <tr key={i} className={`table-row cursor-pointer ${isSelected ? 'bg-violet-600/5' : ''}`} onClick={() => toggleSelect(g)}>
+                    <tr key={i} className={`table-row cursor-pointer ${isSelected ? 'bg-zinc-800/50' : ''}`} onClick={() => toggleSelect(g)}>
                       <td className="table-cell">
-                        <div className={`w-4 h-4 rounded border ${isSelected ? 'bg-violet-600 border-violet-500' : 'border-slate-700'} flex items-center justify-center`}>
-                          {isSelected && <div className="w-2 h-2 bg-white rounded-sm" />}
+                        <div className={`w-4 h-4 rounded border ${isSelected ? 'bg-white border-white text-zinc-950' : 'border-zinc-700'} flex items-center justify-center`}>
+                          {isSelected && <div className="w-2 h-2 bg-zinc-950 rounded-sm" />}
                         </div>
                       </td>
                       <td className="table-cell font-medium max-w-48 truncate">{g.Name}</td>
-                      <td className="table-cell"><span className="badge-blue">{g.Platform}</span></td>
-                      <td className="table-cell text-slate-400">{g.Genre}</td>
-                      <td className="table-cell text-slate-500 text-xs truncate max-w-32">{g.Publisher}</td>
-                      <td className="table-cell text-slate-400">{g.Year}</td>
+                      <td className="table-cell"><span className="badge-default">{g.Platform}</span></td>
+                      <td className="table-cell text-zinc-400">{g.Genre}</td>
+                      <td className="table-cell text-zinc-500 text-xs truncate max-w-32">{g.Publisher}</td>
+                      <td className="table-cell text-zinc-400">{g.Year}</td>
                       <td className="table-cell font-mono">{g.Global_Sales?.toFixed(2)}M</td>
                       <td className="table-cell">{g.Critic_Score ? (
-                        <span className={`badge ${g.Critic_Score >= 80 ? 'badge-green' : 'badge-violet'}`}>{g.Critic_Score}</span>
+                        <span className="badge-default font-mono">{g.Critic_Score}</span>
                       ) : '–'}</td>
                     </tr>
                   );

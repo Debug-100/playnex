@@ -121,7 +121,7 @@
     border: 1px solid var(--border-2);
     color: var(--muted-fg);
   }
-  /* Keep these for compatibility */
+  /* Compatibility badge aliases */
   .badge-violet  { @apply badge-default; }
   .badge-green   { @apply badge-default; }
   .badge-blue    { @apply badge-default; }
