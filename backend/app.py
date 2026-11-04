@@ -23,7 +23,7 @@ from routes.model_metrics import model_bp
 from services.data_service import DataService
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173", "http://localhost:3000"])
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 # Register blueprints
 app.register_blueprint(health_bp, url_prefix="/api")
