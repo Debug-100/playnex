@@ -1,304 +1,242 @@
-# PLAYNEX — Game Launch Strategy Advisor
+<div align="center">
 
-> **Build smarter. Launch strategically.**
+# PLAYNEX
 
-PLAYNEX is a data-driven game launch strategy platform that helps independent game developers and small studios make informed decisions before releasing their games. It analyses historical video game sales data using **Random Forest Regression** to provide market research, competitor benchmarking, ML-based sales estimation, and data-backed launch recommendations.
+**Game Market Intelligence & Launch Strategy Platform**
 
----
+*Build smarter. Launch strategically.*
 
-## Problem Statement
+[![React](https://img.shields.io/badge/React-19.x-black?style=flat&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-black?style=flat&logo=typescript)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-6.x-black?style=flat&logo=vite)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-black?style=flat&logo=tailwindcss)](https://tailwindcss.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-black?style=flat&logo=python)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.x-black?style=flat&logo=flask)](https://flask.palletsprojects.com/)
+[![scikit-learn](https://img.shields.io/badge/scikit--learn-1.6+-black?style=flat&logo=scikit-learn)](https://scikit-learn.org/)
 
-Independent game developers often launch games without understanding the competitive landscape or historical market dynamics. Without data-driven insights, they risk:
-- Targeting oversaturated genre-platform combinations.
-- Misjudging regional demand for their genre.
-- Under- or overestimating realistic sales benchmarks.
-- Missing historically strong publisher or platform patterns.
+[Features](#features) • [Architecture](#architecture) • [Machine Learning Pipeline](#machine-learning-pipeline) • [Quickstart](#quickstart) • [Deployment](#deployment) • [Limitations](#limitations)
 
-PLAYNEX addresses these problems by making historical market intelligence accessible and interactive.
-
----
-
-## Objectives
-
-1. Enable historical gaming market research through interactive visualisations.
-2. Provide competitor intelligence via searchable, filterable game data.
-3. Estimate historical sales performance for hypothetical game configurations using Random Forest.
-4. Surface data-backed launch recommendations with supporting evidence.
-5. Deliver a production-quality, visually polished SaaS-style interface.
+</div>
 
 ---
 
-## Dataset Sources
+## Overview
 
-**Primary (required):**
-- **Video Game Sales with Ratings** — [Kaggle](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings)
-  - `Video_Games_Sales_as_at_22_Dec_2016.csv`
-  - Contains: Name, Platform, Year, Genre, Publisher, NA/EU/JP/Other/Global Sales, Critic Score, User Score, Developer, Rating (ESRB), and review counts.
+**PLAYNEX** is a data-driven launch strategy platform designed for indie game developers, game studios, and small publishers. By analyzing historical game sales records (1980–2016) with a multi-output **Random Forest Regression** model, PLAYNEX transforms raw video game market history into actionable pre-launch intelligence:
 
-**Alternative (fallback):**
-- **Video Game Sales** — [Kaggle](https://www.kaggle.com/datasets/gregorut/videogamesales)
-  - `vgsales.csv`
-  - Contains: Name, Platform, Year, Genre, Publisher, NA/EU/JP/Other/Global Sales.
+- **Market Research**: Uncover historical genre distributions, console generation dynamics, and regional preferences across North America, Europe, Japan, and other markets.
+- **Competitor Benchmarking**: Search, filter, and inspect thousands of historical releases with multi-game side-by-side metric comparisons.
+- **Launch Simulator**: Configure hypothetical games by target genre, platform, publisher, and release timeframe to predict regional and worldwide unit sales.
+- **Evidence-Based Recommendations**: Generate platform-genre fit ratings, identify high-opportunity markets, and discover top-performing comparable titles.
 
----
-
-## Dataset Attributes
-
-| Column | Type | Description |
-|---|---|---|
-| Name | string | Game title |
-| Platform | string | Console/platform |
-| Year_of_Release | numeric | Release year (1980–2016) |
-| Genre | string | Game genre |
-| Publisher | string | Publishing company |
-| NA_Sales | float | North American sales (millions) |
-| EU_Sales | float | European sales (millions) |
-| JP_Sales | float | Japanese sales (millions) |
-| Other_Sales | float | Rest-of-world sales (millions) |
-| Global_Sales | float | Worldwide sales (millions) |
-| Critic_Score | float | Metacritic score (0–100) |
-| User_Score | float | Metacritic user score (0–10) |
-| Developer | string | Development studio |
-| Rating | string | ESRB rating |
+> [!NOTE]
+> PLAYNEX uses historical dataset patterns (1980–2016) to assist pre-production planning. It is designed as a decision-support platform, not an absolute guarantee of commercial success.
 
 ---
 
-## Preprocessing Methodology
+## Features
 
-The preprocessing pipeline (`ml/preprocessing.py`) performs:
+### 1. Market Intelligence
+- **Genre Dynamics**: Interactive sales breakdowns across all major historical genres.
+- **Platform Comparisons**: Head-to-head performance across 30+ console generations and handhelds.
+- **Regional Demand**: Distribution charts highlighting market share across NA, EU, JP, and ROW.
+- **Sales Trendline**: Multi-decade historical release patterns and revenue shifts over time.
+- **Dynamic Insights**: Automated data-driven findings summarizing top platforms and market conditions based on active filters.
 
-1. **Duplicate removal** — Exact duplicate rows are dropped.
-2. **Missing year handling** — Invalid years outside [1980, 2020] are removed; missing years are imputed using the median year per platform.
-3. **User_Score normalisation** — `tbd` values are coerced to `NaN`; the column is converted to numeric.
-4. **Categorical cleaning** — Genre, Publisher, Platform fields are stripped and normalised with title-case formatting.
-5. **Missing categoricals** — `NaN` genres, publishers, and platforms are replaced with `"Unknown"`.
-6. **Zero-sales filtering** — Games with Global_Sales ≤ 0 are removed.
-7. **Outlier inspection** — Top 1% by Global_Sales are logged but not removed (legitimate blockbusters).
-8. **Processed dataset saved** — `data/processed/cleaned_games.csv` preserves the cleaned version without modifying raw data.
-9. **Statistics persisted** — `data/processed/dataset_stats.json` caches aggregate metrics for fast API responses.
+### 2. Competitor Intelligence
+- Search across 16,000+ historical titles by title, publisher, platform, genre, and release period.
+- Sort by Global Sales, North American Sales, Critic Score, and Release Year.
+- Select up to 5 games for side-by-side comparisons covering sales metrics, regional distribution, and review scores.
 
----
+### 3. Launch Simulator (Centrepiece)
+- Configure target parameters: **Genre**, **Platform**, **Publisher**, and **Release Year Reference**.
+- Inputs are strictly constrained to verified historical categories, eliminating invalid prediction inputs.
+- Single multi-output **Random Forest Regressor** predicts:
+  - North American Sales (`NA_Sales`)
+  - European Sales (`EU_Sales`)
+  - Japanese Sales (`JP_Sales`)
+  - Other Regional Sales (`Other_Sales`)
+  - Global Sales (`Global_Sales`)
+- **Strategy Comparison**: Save multiple scenarios (e.g., PS3 vs. Xbox 360 vs. PC launch) and inspect variance tables to identify the historically optimal configuration.
 
-## Random Forest Regression
+### 4. Launch Recommendations
+- Ranked genre-platform combinations by historical average sales.
+- Regional demand concentration for selected game genres.
+- Top comparable titles and alternative platforms worth investigating with minimum historical sample thresholds.
 
-### Why Random Forest?
-
-Random Forest Regression is well-suited for this problem because:
-
-- **Non-linearity**: Game sales do not follow a linear pattern. Random Forest captures complex interactions between genre, platform, publisher, and year.
-- **Feature importance**: The model inherently ranks which features most influence sales estimates.
-- **Robustness to outliers**: Averaging across many trees reduces sensitivity to blockbuster outliers.
-- **Handles categorical features**: After ordinal encoding, the model processes mixed feature types naturally.
-- **No strong distributional assumptions**: Unlike linear regression, it makes no assumptions about residual normality.
-
-### Model Configuration
-
-| Parameter | Value |
-|---|---|
-| Estimators | 200 |
-| Max depth | 15 |
-| Min samples leaf | 3 |
-| Random seed | 42 |
-| Multi-output | Yes (single model predicts all 5 targets) |
-
-### Input Features (Pre-launch only)
-
-| Feature | Description |
-|---|---|
-| Genre | Primary genre |
-| Platform | Target platform |
-| Publisher | Publisher name |
-| Year | Release year reference |
-
-**Excluded** (post-release, would cause target leakage): `Critic_Score`, `User_Score`, `Critic_Count`, `User_Count`, any sales figures.
-
-### Prediction Targets
-
-- `NA_Sales` — North American sales (millions)
-- `EU_Sales` — European sales (millions)
-- `JP_Sales` — Japanese sales (millions)
-- `Other_Sales` — Rest-of-world sales (millions)
-- `Global_Sales` — Worldwide sales (millions)
-
-### Training Methodology
-
-- 80/20 stratified split, `random_state=42`.
-- `OrdinalEncoder` with `handle_unknown='use_encoded_value'` and `unknown_value=-1` for safe handling of unseen categories.
-- Preprocessing and model assembled into a scikit-learn `Pipeline`.
-- Model persisted with **Joblib** to `artifacts/model.joblib`.
-- Compared against a **mean-prediction baseline** (`DummyRegressor`), not another ML algorithm.
-
-### Evaluation Metrics
-
-Metrics are computed on the held-out 20% test set and saved to `artifacts/metrics.json`:
-
-| Metric | Description |
-|---|---|
-| R² Score | Proportion of variance explained (1.0 = perfect) |
-| MAE | Mean Absolute Error in millions of units |
-| RMSE | Root Mean Squared Error in millions of units |
+### 5. Model Transparency & Evaluation
+- Real-time reporting of actual test split results ($R^2$, MAE, RMSE) computed on a held-out 20% test dataset.
+- Direct benchmark against a mean-prediction baseline (`DummyRegressor`).
+- Feature importance visualization displaying relative weights for Genre, Platform, Publisher, and Release Year.
 
 ---
 
-## System Architecture
+## Architecture
+
+PLAYNEX is built with a decoupled frontend and API architecture:
 
 ```
-PLAYNEX/
+playnex/
+├── backend/                  # Flask REST API
+│   ├── routes/               # Modular API route blueprints
+│   │   ├── health.py         # Health checks
+│   │   ├── overview.py       # Aggregate dataset metrics
+│   │   ├── market.py         # Market analysis & filters
+│   │   ├── games.py          # Paginated search & comparisons
+│   │   ├── simulator.py      # RF sales inference & scenario comparisons
+│   │   ├── recommendations.py# Evidence-backed strategy suggestions
+│   │   └── model_metrics.py  # Model evaluation metrics & feature weights
+│   ├── services/
+│   │   └── data_service.py   # Cached singleton for dataset operations
+│   ├── app.py                # WSGI entrypoint with CORS
+│   └── requirements.txt      # Backend Python dependencies
+├── ml/                       # Machine learning pipeline
+│   ├── preprocessing.py      # Cleaning, deduplication, imputation
+│   ├── train.py              # Multi-output Random Forest training & evaluation
+│   └── predict.py            # Prediction service & input validation
+├── frontend/                 # React 19 + TypeScript + Vite application
+│   ├── src/
+│   │   ├── components/       # Metric cards, sidebar, error/skeleton states
+│   │   ├── pages/            # Overview, Market, Competitors, Simulator, Recs, Model
+│   │   ├── services/         # Axios API client (VITE_API_BASE compatible)
+│   │   └── index.css         # shadcn-inspired neutral monochrome styling
+│   └── package.json
 ├── data/
-│   ├── raw/                    # Place Kaggle CSV here (unchanged)
-│   └── processed/              # Cleaned dataset + stats JSON
-├── artifacts/
-│   ├── model.joblib            # Trained Random Forest pipeline
-│   ├── metrics.json            # Evaluation results
-│   └── model_options.json      # Valid dropdown values
-├── ml/
-│   ├── preprocessing.py        # Data cleaning pipeline
-│   ├── train.py                # Model training + evaluation
-│   └── predict.py              # Inference service
-├── backend/
-│   ├── app.py                  # Flask application + CORS
-│   ├── routes/                 # API route blueprints
-│   └── services/               # DataService singleton
-└── frontend/
-    └── src/
-        ├── pages/              # Route-level components
-        ├── components/         # Shared UI components
-        └── services/api.ts     # Axios API client
+│   ├── raw/                  # Source CSV location
+│   └── processed/            # Preprocessed dataset & stats cache
+└── artifacts/                # Trained model pipeline & metrics JSON
 ```
 
 ---
 
-## Technology Stack
+## Machine Learning Pipeline
 
-| Layer | Technologies |
-|---|---|
-| **Frontend** | React, Vite, TypeScript, Tailwind CSS, Recharts, Lucide React, React Router |
-| **Backend** | Python, Flask, Flask-CORS, Pandas, NumPy |
-| **Machine Learning** | scikit-learn (RandomForestRegressor, Pipeline, OrdinalEncoder), Joblib |
-| **Storage** | Local CSV files, JSON artifacts |
+```mermaid
+flowchart LR
+    A[Raw Kaggle CSV] --> B[Data Preprocessing]
+    B --> C[Cleaned Dataset]
+    C --> D[Feature Pipeline: OrdinalEncoder + Year Passthrough]
+    D --> E[Multi-Output RandomForestRegressor]
+    E --> F[model.joblib]
+    E --> G[metrics.json]
+```
 
----
+### Pre-Launch Features Only (Zero Target Leakage)
+To prevent target leakage, post-release metrics are strictly excluded from prediction features:
+- **Included**: `Genre`, `Platform`, `Publisher`, `Year`
+- **Excluded**: `Critic_Score`, `User_Score`, `Critic_Count`, `User_Count`, and regional sales numbers.
 
-## Application Modules
+### Model Evaluation (Held-Out 20% Test Split)
 
-### Module 1 — Market Research
-Interactive market overview with filters by genre, platform, year. Visualisations: genre sales bar chart, platform comparison, regional pie chart, historical trend line, auto-generated insights.
+| Target | Random Forest $R^2$ | Baseline $R^2$ | Random Forest MAE | Random Forest RMSE |
+|---|---|---|---|---|
+| **NA Sales** | `0.0534` | `-0.0002` | `0.2736M` | `0.9887M` |
+| **EU Sales** | `0.0475` | `-0.0005` | `0.1763M` | `0.6804M` |
+| **JP Sales** | `0.2178` | `-0.0001` | `0.0826M` | `0.2734M` |
+| **Other Sales** | `0.0745` | `-0.0003` | `0.0528M` | `0.1996M` |
+| **Global Sales** | `0.0648` | `-0.0003` | `0.5362M` | `1.9653M` |
 
-### Module 2 — Competitor Analysis
-Searchable, filterable, paginated game table. Select up to 5 titles for side-by-side comparison (sales, scores, regional breakdown).
-
-### Module 3 — Launch Simulator *(Centrepiece)*
-Configure genre, platform, publisher, year → get a Random Forest sales estimate. Displays global + regional predictions, charts, and a strategy comparison table for multiple configurations.
-
-### Module 4 — Recommendations
-Evidence-based recommendations: top genre-platform combos, regional demand analysis, comparable competitor titles, and alternative platform suggestions — all with supporting statistics.
-
-### Model Performance
-Live display of training/test split, R², MAE, RMSE per target, comparison vs. baseline, and feature importance chart.
-
----
-
-## API Endpoints
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | `/api/health` | Backend health check |
-| GET | `/api/overview` | Dashboard stats + top genres/platforms |
-| GET | `/api/market/genres` | Genre stats (filterable) |
-| GET | `/api/market/platforms` | Platform stats (filterable) |
-| GET | `/api/market/regions` | Regional sales distribution |
-| GET | `/api/market/trends` | Year-over-year trends |
-| GET | `/api/market/insights` | Auto-generated insights |
-| GET | `/api/market/filters` | Dropdown options |
-| GET | `/api/games` | Search + filter + paginate games |
-| GET | `/api/games/compare` | Compare specific titles |
-| GET | `/api/simulator/options` | Valid model inputs |
-| POST | `/api/simulator/predict` | Generate sales prediction |
-| POST | `/api/simulator/compare` | Compare multiple scenarios |
-| GET | `/api/model/metrics` | Evaluation metrics |
-| GET | `/api/model/feature-importance` | Feature importances |
-| GET | `/api/recommendations` | Evidence-based recommendations |
+*Evaluation results are computed on 3,344 unseen test titles ($N_{train} = 13,373$, random seed = 42).*
 
 ---
 
-## Installation
+## Quickstart
 
 ### Prerequisites
+- Python 3.10 or higher
+- Node.js 18 or higher with npm
 
-- Python 3.10+
-- Node.js 18+
-- npm 9+
-
-### 1. Install Python dependencies
-
+### 1. Clone the Repository
 ```bash
-pip install -r requirements.txt
+git clone https://github.com/Debug-100/playnex.git
+cd playnex
 ```
 
-### 2. Install frontend dependencies
-
+### 2. Set Up the Backend
 ```bash
-cd frontend
-npm install
+# Create virtual environment (optional but recommended)
+python -m venv venv
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # macOS / Linux
+
+# Install dependencies
+pip install -r backend/requirements.txt
 ```
 
----
+### 3. (Optional) Run Dataset Preprocessing & Training
+> [!TIP]
+> Pre-trained model artifacts (`artifacts/model.joblib`) and processed data are already included in the repository. You can skip this step unless you wish to rebuild the model from scratch.
 
-## Dataset Setup
-
-> **Important:** The dataset must be downloaded manually from Kaggle.
-
-1. Download from: https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings
-2. Place the CSV in: `data/raw/Video_Games_Sales_as_at_22_Dec_2016.csv`
-
-Alternatively, download `vgsales.csv` from the alternative link and place it in `data/raw/vgsales.csv`.
-
----
-
-## Running PLAYNEX
-
-### Step 1: Run the data pipeline (once)
-
+If retraining from raw data:
+1. Download [Video Games Sales with Ratings](https://www.kaggle.com/datasets/rush4ratio/video-game-sales-with-ratings) from Kaggle.
+2. Save it to `data/raw/Video_Games_Sales_as_at_22_Dec_2016.csv`.
+3. Run:
 ```bash
 python ml/preprocessing.py
 python ml/train.py
 ```
 
-Or use the convenience script:
-```
-run_pipeline.bat
-```
+### 4. Run the Servers
 
-### Step 2: Start the backend
-
+#### Terminal 1 — Backend:
 ```bash
 cd backend
 python app.py
 ```
+*API runs at `http://localhost:5000` (Health check: `http://localhost:5000/api/health`)*
 
-Or: `start_backend.bat` → runs at http://localhost:5000
-
-### Step 3: Start the frontend
-
+#### Terminal 2 — Frontend:
 ```bash
 cd frontend
+npm install
 npm run dev
 ```
-
-Or: `start_frontend.bat` → opens at http://localhost:5173
-
----
-
-## Known Limitations
-
-1. **Historical data only**: The dataset covers primarily 1980–2016. Modern mobile, indie, and digital-only releases are under-represented.
-2. **Physical sales focus**: The original dataset represents physical retail sales tracked by VGChartz. Digital sales, DLC, and free-to-play monetisation are absent.
-3. **Publisher bias**: Some publishers have hundreds of titles; others have one. Publisher-based predictions may reflect quantity effects.
-4. **Regional sparsity**: JP_Sales data is thin for many Western genres. Japanese market predictions have higher uncertainty.
-5. **No temporal forecasting**: The model does not extrapolate market trends forward. Year inputs are reference points for historical conditions only.
-6. **Not a commercial guarantee**: PLAYNEX is a decision-support tool based on historical patterns. Real-world success depends on game quality, marketing, timing, and many factors not in the dataset.
+*Application runs at `http://localhost:5173`*
 
 ---
 
-*PLAYNEX — Build smarter. Launch strategically.*
+## API Reference
 
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/health` | Backend status check |
+| `GET` | `/api/overview` | Total games, platform counts, top genres & platforms |
+| `GET` | `/api/market/genres` | Filterable genre-level sales and count metrics |
+| `GET` | `/api/market/platforms` | Filterable platform-level sales comparison |
+| `GET` | `/api/market/regions` | Regional sales distribution and shares |
+| `GET` | `/api/market/trends` | Year-over-year sales and title release trends |
+| `GET` | `/api/market/filters` | Dynamic lists of available genres, platforms, publishers |
+| `GET` | `/api/market/insights` | Auto-calculated key insights based on active filters |
+| `GET` | `/api/games` | Search, filter, sort, and paginate historical titles |
+| `GET` | `/api/games/compare` | Compare selected games by name |
+| `GET` | `/api/simulator/options` | Valid categories for simulator inputs |
+| `POST`| `/api/simulator/predict` | Generate regional and global sales predictions |
+| `POST`| `/api/simulator/compare` | Evaluate and rank multiple launch configurations |
+| `GET` | `/api/recommendations` | Evidence-based platform and regional recommendations |
+| `GET` | `/api/model/metrics` | Actual model evaluation figures ($R^2$, MAE, RMSE) |
+| `GET` | `/api/model/feature-importance`| Relative feature weights for input variables |
+
+---
+
+## Deployment
+
+### Backend (Render)
+- **Root Directory**: `backend`
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `gunicorn app:app`
+
+### Frontend (Vercel)
+- **Framework Preset**: `Vite`
+- **Root Directory**: `frontend`
+- **Build Command**: `npm run build`
+- **Environment Variable**: `VITE_API_BASE=https://<your-render-app>.onrender.com/api`
+
+---
+
+## Limitations
+
+> [!WARNING]
+> Please consider these historical data boundaries when evaluating estimates:
+> - **Historical Timeframe**: The dataset captures physical retail sales from 1980 through 2016. Modern digital stores (Steam, Epic, eShop, Game Pass) and mobile microtransactions are not represented.
+> - **Retail Tracking**: Data reflects VGChartz physical sales records; free-to-play titles and live-service revenues are excluded.
+> - **Decision-Support Scope**: Random Forest predictions represent historical expectation baselines. Quality of execution, marketing execution, community reception, and launch timing remain pivotal factors.
