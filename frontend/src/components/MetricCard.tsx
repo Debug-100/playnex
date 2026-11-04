@@ -9,30 +9,20 @@ interface Props {
   delay?: number;
 }
 
-export default function MetricCard({ label, value, sub, accent, icon, delay = 0 }: Props) {
+export default function MetricCard({ label, value, sub, icon, delay = 0 }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay, ease: 'easeOut' }}
+      transition={{ duration: 0.3, delay }}
       className="metric-card group"
-      style={accent ? {
-        background: 'rgba(139,92,246,0.07)',
-        borderColor: 'rgba(139,92,246,0.2)',
-        boxShadow: '0 0 20px rgba(139,92,246,0.08)',
-      } : {}}
     >
-      <div className="flex items-center justify-between mb-1">
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
         <span className="metric-label">{label}</span>
-        {icon && <span style={{ color: '#334155' }} className="group-hover:text-violet-500 transition-colors">{icon}</span>}
+        {icon && <span style={{ color: '#3f3f46' }}>{icon}</span>}
       </div>
-      <span
-        className="metric-value"
-        style={accent ? { color: '#c4b5fd' } : {}}
-      >
-        {value}
-      </span>
-      {sub && <span className="text-[11px] mt-0.5" style={{ color: '#1e293b' }}>{sub}</span>}
+      <span className="metric-value">{value}</span>
+      {sub && <span style={{ fontSize: '11px', color: '#3f3f46' }}>{sub}</span>}
     </motion.div>
   );
 }

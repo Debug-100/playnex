@@ -23,14 +23,6 @@ interface OverviewData {
   top_platforms: { Platform: string; total_sales: number }[];
 }
 
-const stagger = {
-  container: { animate: { transition: { staggerChildren: 0.07 } } },
-  item: {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-  },
-};
-
 export default function OverviewPage() {
   const [data, setData] = useState<OverviewData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -48,132 +40,106 @@ export default function OverviewPage() {
   }, []);
 
   return (
-    <div className="relative">
-      {/* Hero glow + grid */}
-      <div className="absolute inset-0 hero-glow grid-bg pointer-events-none" style={{ height: '400px' }} />
-
-      {/* ─── HERO ─── */}
-      <div className="relative mb-12 pt-2">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center gap-2 mb-5"
-        >
-          <span className="font-mono-data text-[11px] tracking-[0.25em] uppercase px-3 py-1 rounded-full"
-            style={{ color: '#8b5cf6', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)' }}>
-            v1.0 · Random Forest Engine
-          </span>
-        </motion.div>
-
+    <div>
+      {/* ── Hero ── */}
+      <div className="mb-10">
         <motion.h1
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="font-black leading-none tracking-tighter mb-4"
-          style={{ fontSize: 'clamp(2.4rem, 5vw, 4rem)' }}
+          transition={{ duration: 0.4 }}
+          className="font-black tracking-tighter text-white mb-3"
+          style={{ fontSize: 'clamp(2rem, 4.5vw, 3.25rem)', lineHeight: 1.05, letterSpacing: '-0.03em' }}
         >
-          <span className="text-white">Build smarter.</span>
-          <br />
+          Build smarter.<br />
           <span className="gradient-text">Launch strategically.</span>
         </motion.h1>
 
         <motion.p
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
-          className="text-sm leading-relaxed max-w-lg mb-7"
-          style={{ color: '#475569' }}
+          transition={{ duration: 0.35, delay: 0.1 }}
+          style={{ color: '#71717a', fontSize: '14px', lineHeight: 1.6, maxWidth: '480px', marginBottom: '24px' }}
         >
           Historical game market intelligence powered by Random Forest analysis of{' '}
-          <span style={{ color: '#94a3b8' }}>
+          <span style={{ color: '#a1a1aa' }}>
             {data ? `${data.stats.total_games.toLocaleString()} titles` : 'thousands of titles'}
           </span>{' '}
-          spanning{' '}
-          <span style={{ color: '#94a3b8' }}>
+          across{' '}
+          <span style={{ color: '#a1a1aa' }}>
             {data ? `${data.stats.year_range[0]}–${data.stats.year_range[1]}` : 'four decades'}.
           </span>
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.25 }}
+          transition={{ duration: 0.3, delay: 0.18 }}
           className="flex items-center gap-3"
         >
           <button onClick={() => navigate('/simulator')} className="btn-primary">
-            <Rocket size={15} />
+            <Rocket size={14} strokeWidth={1.75} />
             Launch Simulator
           </button>
           <button onClick={() => navigate('/market')} className="btn-secondary">
-            <Globe size={15} />
+            <Globe size={14} strokeWidth={1.75} />
             Explore Market
           </button>
         </motion.div>
       </div>
 
-      {/* ─── Error ─── */}
-      {error && (
-        <div className="mb-6">
-          <ErrorState error={error.msg} dataMissing={error.dataMissing} />
-        </div>
-      )}
+      {/* ── Error ── */}
+      {error && <div className="mb-6"><ErrorState error={error.msg} dataMissing={error.dataMissing} /></div>}
 
-      {/* ─── Metric Strip ─── */}
-      <section className="mb-10">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-[10px] uppercase tracking-widest font-medium mb-4"
-          style={{ color: '#1e293b' }}
-        >
-          Dataset Overview
-        </motion.p>
+      {/* ── Stats grid ── */}
+      <section className="mb-8">
+        <p style={{ fontSize: '11px', color: '#3f3f46', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, marginBottom: '12px' }}>
+          Dataset
+        </p>
         {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
             {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} rows={2} />)}
           </div>
         ) : data ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            <MetricCard label="Games Analysed" value={data.stats.total_games.toLocaleString()} icon={<Gamepad2 size={13} />} accent delay={0} />
-            <MetricCard label="Global Sales" value={`${(data.stats.total_global_sales / 1000).toFixed(1)}B`} sub="units" icon={<TrendingUp size={13} />} delay={0.05} />
-            <MetricCard label="Avg per Game" value={`${data.stats.avg_sales.toFixed(2)}M`} icon={<Globe size={13} />} delay={0.1} />
-            <MetricCard label="Platforms" value={data.stats.num_platforms} icon={<Monitor size={13} />} delay={0.15} />
-            <MetricCard label="Genres" value={data.stats.num_genres} icon={<Tag size={13} />} delay={0.2} />
-            <MetricCard label="Publishers" value={data.stats.num_publishers.toLocaleString()} icon={<Building2 size={13} />} delay={0.25} />
+            {[
+              { label: 'Games', value: data.stats.total_games.toLocaleString(), icon: <Gamepad2 size={13} strokeWidth={1.5} />, delay: 0 },
+              { label: 'Global Sales', value: `${(data.stats.total_global_sales / 1000).toFixed(1)}B`, icon: <TrendingUp size={13} strokeWidth={1.5} />, delay: 0.04 },
+              { label: 'Avg / Game', value: `${data.stats.avg_sales.toFixed(2)}M`, icon: <Globe size={13} strokeWidth={1.5} />, delay: 0.08 },
+              { label: 'Platforms', value: data.stats.num_platforms, icon: <Monitor size={13} strokeWidth={1.5} />, delay: 0.12 },
+              { label: 'Genres', value: data.stats.num_genres, icon: <Tag size={13} strokeWidth={1.5} />, delay: 0.16 },
+              { label: 'Publishers', value: data.stats.num_publishers.toLocaleString(), icon: <Building2 size={13} strokeWidth={1.5} />, delay: 0.2 },
+            ].map(({ label, value, icon, delay }) => (
+              <MetricCard key={label} label={label} value={value} icon={icon} delay={delay} />
+            ))}
           </div>
         ) : null}
       </section>
 
-      {/* ─── Top Genres + Platforms ─── */}
+      {/* ── Top genres + platforms ── */}
       {data && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-10">
-          {/* Genres */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35, duration: 0.45 }}
-            className="card p-5"
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }} className="card p-5"
           >
-            <p className="text-[10px] uppercase tracking-widest font-medium mb-4" style={{ color: '#334155' }}>Top Genres</p>
-            <div className="space-y-3.5">
+            <p style={{ fontSize: '11px', color: '#3f3f46', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, marginBottom: '14px' }}>
+              Top Genres
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {data.top_genres.map((g, i) => {
-                const max = data.top_genres[0].total_sales;
-                const pct = (g.total_sales / max) * 100;
+                const pct = (g.total_sales / data.top_genres[0].total_sales) * 100;
                 return (
                   <div key={g.Genre}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span style={{ color: '#94a3b8' }}>{g.Genre}</span>
-                      <span className="font-mono-data text-xs" style={{ color: '#475569' }}>{g.total_sales.toFixed(0)}M</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '5px' }}>
+                      <span style={{ color: '#e4e4e7' }}>{g.Genre}</span>
+                      <span style={{ color: '#52525b', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}>{g.total_sales.toFixed(0)}M</span>
                     </div>
-                    <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                    <div style={{ height: '2px', background: '#18181b', borderRadius: '99px', overflow: 'hidden' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.7, delay: 0.4 + i * 0.06, ease: 'easeOut' }}
-                        className="h-full rounded-full"
-                        style={{ background: 'linear-gradient(90deg, #7c3aed, #6366f1)' }}
+                        transition={{ duration: 0.6, delay: 0.3 + i * 0.05 }}
+                        style={{ height: '100%', background: '#ffffff', borderRadius: '99px' }}
                       />
                     </div>
                   </div>
@@ -182,31 +148,28 @@ export default function OverviewPage() {
             </div>
           </motion.div>
 
-          {/* Platforms */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.45 }}
-            className="card p-5"
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.33 }} className="card p-5"
           >
-            <p className="text-[10px] uppercase tracking-widest font-medium mb-4" style={{ color: '#334155' }}>Top Platforms</p>
-            <div className="space-y-3.5">
+            <p style={{ fontSize: '11px', color: '#3f3f46', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, marginBottom: '14px' }}>
+              Top Platforms
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {data.top_platforms.map((p, i) => {
-                const max = data.top_platforms[0].total_sales;
-                const pct = (p.total_sales / max) * 100;
+                const pct = (p.total_sales / data.top_platforms[0].total_sales) * 100;
                 return (
                   <div key={p.Platform}>
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span style={{ color: '#94a3b8' }}>{p.Platform}</span>
-                      <span className="font-mono-data text-xs" style={{ color: '#475569' }}>{p.total_sales.toFixed(0)}M</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginBottom: '5px' }}>
+                      <span style={{ color: '#e4e4e7' }}>{p.Platform}</span>
+                      <span style={{ color: '#52525b', fontFamily: 'JetBrains Mono, monospace', fontSize: '11px' }}>{p.total_sales.toFixed(0)}M</span>
                     </div>
-                    <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                    <div style={{ height: '2px', background: '#18181b', borderRadius: '99px', overflow: 'hidden' }}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${pct}%` }}
-                        transition={{ duration: 0.7, delay: 0.45 + i * 0.06, ease: 'easeOut' }}
-                        className="h-full rounded-full"
-                        style={{ background: 'linear-gradient(90deg, #4f46e5, #2563eb)' }}
+                        transition={{ duration: 0.6, delay: 0.35 + i * 0.05 }}
+                        style={{ height: '100%', background: '#71717a', borderRadius: '99px' }}
                       />
                     </div>
                   </div>
@@ -217,85 +180,52 @@ export default function OverviewPage() {
         </div>
       )}
 
-      {/* ─── Module Cards ─── */}
-      <section className="mb-10">
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-[10px] uppercase tracking-widest font-medium mb-4"
-          style={{ color: '#1e293b' }}
-        >
-          Platform Modules
-        </motion.p>
-        <motion.div
-          variants={stagger.container}
-          initial="initial"
-          animate="animate"
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
-        >
+      {/* ── Module cards ── */}
+      <section className="mb-8">
+        <p style={{ fontSize: '11px', color: '#3f3f46', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 500, marginBottom: '12px' }}>
+          Modules
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
-            {
-              label: 'Market Research', desc: 'Explore historical market conditions, genre trends, platform performance, and regional distributions.',
-              to: '/market', icon: '01',
-            },
-            {
-              label: 'Competitor Analysis', desc: 'Search, filter, and compare historical titles. Study their commercial performance side-by-side.',
-              to: '/competitors', icon: '02',
-            },
-            {
-              label: 'Launch Simulator', desc: 'Configure a hypothetical game and get a Random Forest–based historical sales estimate.',
-              to: '/simulator', icon: '03', highlight: true,
-            },
-            {
-              label: 'Recommendations', desc: 'Data-backed insights on genre-platform combinations, region demand, and comparable titles.',
-              to: '/recommendations', icon: '04',
-            },
-          ].map(({ label, desc, to, icon, highlight }) => (
+            { n: '01', label: 'Market Research', desc: 'Historical genre, platform and regional sales trends with interactive filtering.', to: '/market' },
+            { n: '02', label: 'Competitor Analysis', desc: 'Search and compare historical titles side-by-side across sales and scores.', to: '/competitors' },
+            { n: '03', label: 'Launch Simulator', desc: 'Configure a hypothetical game and get a Random Forest–based sales estimate.', to: '/simulator', core: true },
+            { n: '04', label: 'Recommendations', desc: 'Evidence-based insights on genre-platform fit, regional demand, and competitors.', to: '/recommendations' },
+          ].map(({ n, label, desc, to, core }, i) => (
             <motion.button
               key={to}
-              variants={stagger.item}
+              initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38 + i * 0.06 }}
               onClick={() => navigate(to)}
-              className="card p-5 text-left group relative overflow-hidden"
-              style={highlight ? {
-                background: 'rgba(139,92,246,0.06)',
-                borderColor: 'rgba(139,92,246,0.2)',
-              } : {}}
-              whileHover={{ y: -2 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="card p-5 text-left group"
+              style={{ position: 'relative', overflow: 'hidden' }}
+              whileHover={{ y: -1 }}
             >
-              {/* Hover glow sweep */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ background: 'radial-gradient(circle at 20% 50%, rgba(139,92,246,0.06), transparent 60%)' }}
-              />
-              <div className="relative flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2.5">
-                    <span className="font-mono-data text-xs" style={{ color: '#1e293b' }}>{icon}</span>
-                    {highlight && <span className="badge-violet text-[10px]"><Zap size={9} /> Core</span>}
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '10px', color: '#3f3f46' }}>{n}</span>
+                    {core && (
+                      <span className="badge-default" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                        <Zap size={9} strokeWidth={1.5} /> core
+                      </span>
+                    )}
                   </div>
-                  <h3 className="font-semibold text-white text-sm mb-1.5">{label}</h3>
-                  <p className="text-xs leading-relaxed" style={{ color: '#334155' }}>{desc}</p>
+                  <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#fafafa', marginBottom: '4px' }}>{label}</h3>
+                  <p style={{ fontSize: '12px', color: '#52525b', lineHeight: 1.5 }}>{desc}</p>
                 </div>
-                <ArrowRight
-                  size={15}
-                  className="shrink-0 ml-4 mt-0.5 transition-all duration-200 group-hover:translate-x-1"
-                  style={{ color: '#1e293b' }}
+                <ArrowRight size={14} strokeWidth={1.5} style={{ color: '#27272a', marginLeft: '12px', marginTop: '2px', flexShrink: 0, transition: 'color 0.15s, transform 0.15s' }}
+                  className="group-hover:text-zinc-400 group-hover:translate-x-0.5"
                 />
               </div>
             </motion.button>
           ))}
-        </motion.div>
+        </div>
       </section>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
-      >
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
         <Disclaimer>
-          PLAYNEX uses historical video game sales data (primarily 1980–2016). All predictions reflect past market conditions and are not commercial guarantees.
+          PLAYNEX analyses historical video game sales (1980–2016). All estimates reflect past market patterns and are not commercial guarantees.
         </Disclaimer>
       </motion.div>
     </div>

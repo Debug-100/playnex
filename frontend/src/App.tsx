@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import Sidebar from './components/Sidebar';
-import CustomCursor from './components/CustomCursor';
 import OverviewPage from './pages/OverviewPage';
 import MarketPage from './pages/MarketPage';
 import CompetitorsPage from './pages/CompetitorsPage';
@@ -10,9 +9,9 @@ import RecommendationsPage from './pages/RecommendationsPage';
 import ModelPage from './pages/ModelPage';
 
 const pageVariants = {
-  initial: { opacity: 0, y: 12 },
+  initial: { opacity: 0, y: 10 },
   animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -8 },
+  exit:    { opacity: 0, y: -6 },
 };
 
 function AnimatedRoutes() {
@@ -21,12 +20,12 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         {[
-          { path: '/', el: <OverviewPage /> },
-          { path: '/market', el: <MarketPage /> },
-          { path: '/competitors', el: <CompetitorsPage /> },
-          { path: '/simulator', el: <SimulatorPage /> },
-          { path: '/recommendations', el: <RecommendationsPage /> },
-          { path: '/model', el: <ModelPage /> },
+          { path: '/',               el: <OverviewPage /> },
+          { path: '/market',         el: <MarketPage /> },
+          { path: '/competitors',    el: <CompetitorsPage /> },
+          { path: '/simulator',      el: <SimulatorPage /> },
+          { path: '/recommendations',el: <RecommendationsPage /> },
+          { path: '/model',          el: <ModelPage /> },
         ].map(({ path, el }) => (
           <Route
             key={path}
@@ -37,7 +36,7 @@ function AnimatedRoutes() {
                 initial="initial"
                 animate="animate"
                 exit="exit"
-                transition={{ duration: 0.35 }}
+                transition={{ duration: 0.25 }}
               >
                 {el}
               </motion.div>
@@ -52,16 +51,12 @@ function AnimatedRoutes() {
 export default function App() {
   return (
     <BrowserRouter>
-      <CustomCursor />
-      <div className="flex h-screen overflow-hidden" style={{ cursor: 'none' }}>
+      <div className="flex h-screen overflow-hidden">
         <Sidebar />
         <main className="flex-1 overflow-y-auto">
-          {/* Subtle top gradient line */}
-          <div
-            className="h-px w-full sticky top-0 z-10"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent)' }}
-          />
-          <div className="max-w-6xl mx-auto px-6 py-8">
+          {/* Top rule */}
+          <div style={{ height: '1px', background: '#27272a', position: 'sticky', top: 0, zIndex: 10 }} />
+          <div style={{ maxWidth: '1024px', margin: '0 auto', padding: '32px 24px' }}>
             <AnimatedRoutes />
           </div>
         </main>

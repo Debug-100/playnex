@@ -10,18 +10,17 @@ import { SkeletonChart } from '../components/Skeleton';
 import { Filter, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const COLORS = ['#8b5cf6', '#6366f1', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#ec4899'];
+const COLORS = ['#ffffff', '#a1a1aa', '#71717a', '#52525b', '#3f3f46', '#27272a', '#18181b', '#09090b'];
 
 const TT_STYLE = {
   contentStyle: {
-    background: 'rgba(10,10,26,0.95)',
-    border: '1px solid rgba(139,92,246,0.2)',
-    borderRadius: '12px',
-    color: '#e2e8f0',
+    background: '#18181b',
+    border: '1px solid #27272a',
+    borderRadius: '8px',
+    color: '#e4e4e7',
     fontSize: '12px',
-    backdropFilter: 'blur(12px)',
   },
-  cursor: { fill: 'rgba(139,92,246,0.05)' },
+  cursor: { fill: 'rgba(255,255,255,0.03)' },
 };
 
 function FilterBar({ filters, onChange, options }: {
@@ -127,7 +126,7 @@ export default function MarketPage() {
     { name: 'Other', value: regions.region_sales?.Other || 0 },
   ] : [];
 
-  const axisStyle = { fill: '#1e293b', fontSize: 10 };
+  const axisStyle = { fill: '#3f3f46', fontSize: 10 };
 
   return (
     <div>
