@@ -1,0 +1,82 @@
+{
+  "targets": [
+    "NA_Sales",
+    "EU_Sales",
+    "JP_Sales",
+    "Other_Sales",
+    "Global_Sales"
+  ],
+  "split": {
+    "train_samples": 13373,
+    "test_samples": 3344,
+    "total_samples": 16717,
+    "test_ratio": 0.2,
+    "random_seed": 42
+  },
+  "random_forest": {
+    "NA_Sales": {
+      "r2": 0.0534,
+      "mae": 0.2736,
+      "rmse": 0.9887
+    },
+    "EU_Sales": {
+      "r2": 0.0475,
+      "mae": 0.1763,
+      "rmse": 0.6804
+    },
+    "JP_Sales": {
+      "r2": 0.2178,
+      "mae": 0.0826,
+      "rmse": 0.2734
+    },
+    "Other_Sales": {
+      "r2": 0.0745,
+      "mae": 0.0528,
+      "rmse": 0.1996
+    },
+    "Global_Sales": {
+      "r2": 0.0648,
+      "mae": 0.5362,
+      "rmse": 1.9653
+    }
+  },
+  "baseline": {
+    "NA_Sales": {
+      "r2": -0.0002,
+      "mae": 0.3186,
+      "rmse": 1.0163
+    },
+    "EU_Sales": {
+      "r2": -0.0005,
+      "mae": 0.1988,
+      "rmse": 0.6973
+    },
+    "JP_Sales": {
+      "r2": -0.0001,
+      "mae": 0.1176,
+      "rmse": 0.3091
+    },
+    "Other_Sales": {
+      "r2": -0.0002,
+      "mae": 0.0629,
+      "rmse": 0.2075
+    },
+    "Global_Sales": {
+      "r2": -0.0003,
+      "mae": 0.6137,
+      "rmse": 2.0325
+    }
+  },
+  "feature_importances": {
+    "Genre": 0.2659,
+    "Platform": 0.1616,
+    "Publisher": 0.2745,
+    "Year": 0.298
+  },
+  "model_params": {
+    "n_estimators": 200,
+    "max_depth": 15,
+    "min_samples_leaf": 3,
+    "random_seed": 42
+  }
+}
